@@ -1,26 +1,49 @@
-# The Challenge:
+# OT Challenge
 
-The challenge is to create a simple Android app that exercises a REST-ful API. The API endpoint `https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=KoRB4K5LRHygfjCL2AH6iQ7NeUqDAGAB&offset=0` returns a JSON object which is a list of different books published by the New York Times. 
+## Architecture
 
-Using this endpoint, show a list of these items, with each row displaying at least the following data:
+The application is structured using the MVP (Model-View-Presenter) architecture:
 
-- Image
-- Title
-- Description 
+- **Model**: Represents the data layer, including the repository and API service.
+- **View**: Represents the UI layer, including activities and fragments.
+- **Presenter**: Acts as a middleman between the Model and the View, handling the business logic.
 
-### Technical Instructions:
-- MVP architecture, no ViewModel
-- XML Layouts (no Compose)
-- Demonstrate use of Dagger, Retrofit and Glide (for the images)
-- No database needed
-- Feel free to make any assumptions you want along the way or use any third party libraries as needed and document why you used them.
+## Dependencies
 
-### General Instructions:
-- This isn't a visual design exercise. For example, if you set random background colors to clearly differentiate the views when debugging, pick Comic Sans or Papyrus, we won't hold that against you. Well, maybe a little bit if you use Comic Sans :)
-- This is also most of the code you'll be showing us – don't understimate the difficulty of the task, or the importance of this exercise in our process, and rush your PR. Put up your best professional game.
-- This isn't just about handling the happy path. Think slow network (or no network at all), supporting different device sizes, ease of build and run of the project. If we can't check out and click the run button in Android Studio, you're off to a bad start (we've had PRs without a graddle for instance).
-- Explanations on any choice you've made are welcome.
-- We appreciate there's a lot that is asked in this exercise. If you need more time, feel free to ask. If you need to de-prioritize something, apply the same judgement you would on a professional project, argument your decision. 
+The project uses the following dependencies:
 
-Bonus Points:
-  - Unit tests
+- **AndroidX Core**: `androidx.core:core-ktx`
+- **AppCompat**: `androidx.appcompat:appcompat`
+- **Material Components**: `com.google.android.material:material`
+- **Activity KTX**: `androidx.activity:activity-ktx`
+- **ConstraintLayout**: `androidx.constraintlayout:constraintlayout`
+- **Dagger**: `com.google.dagger:dagger` for dependency injection
+- **Retrofit**: `com.squareup.retrofit2:retrofit` for networking
+- **Gson Converter**: `com.squareup.retrofit2:converter-gson` for JSON parsing
+- **Glide**: `com.github.bumptech.glide:glide` for image loading
+- **OkHttp Logging Interceptor**: `com.squareup.okhttp3:logging-interceptor` for logging network requests
+- **RxJava**: `io.reactivex.rxjava3:rxjava` for reactive programming
+- **RxAndroid**: `io.reactivex.rxjava3:rxandroid` for Android-specific bindings
+- **RxKotlin**: `io.reactivex.rxjava3:rxkotlin` for Kotlin extensions
+
+## Setup
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/shreyasmp/otchallenge.git
+    ```
+
+2. Open the project in Android Studio.
+
+3. Build the project to download all dependencies.
+
+## Usage
+
+- The main entry point of the application is `MainActivity`.
+- The `BookPresenter` handles the business logic and interacts with the `BookRepository` to fetch data.
+- The `BookRepositoryImpl` fetches data from the API using Retrofit.
+- The `NetworkCallback` handles network connectivity changes.
+
+## Screenshot/Video
+![alt text](images/Book_List.gif)
+![alt text](images/AndroidTest.png)

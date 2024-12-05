@@ -1,6 +1,6 @@
 [versions]
 agp = "8.4.2"
-kotlin = "1.9.0"
+kotlin = "1.9.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -15,6 +15,9 @@ glide = "4.16.0"
 rx-android = "2.1.1"
 rx-java = "2.2.21"
 rx-kotlin = "2.4.0"
+gsonConverterFactory = "2.11.0"
+httpLoggingInterceptor = "4.10.0"
+mockito = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +36,10 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 rx-java = {group = "io.reactivex.rxjava2", name="rxjava", version.ref = "rx-java"}
 rx-android = {group = "io.reactivex.rxjava2", name="rxandroid", version.ref = "rx-android"}
 rx-kotlin = {group = "io.reactivex.rxjava2", name="rxkotlin", version.ref = "rx-kotlin"}
+retrofit-gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gsonConverterFactory" }
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "httpLoggingInterceptor" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
