@@ -17,13 +17,13 @@ import com.example.otchallenge.databinding.ActivityMainBinding
 import com.example.otchallenge.models.Book
 import com.example.otchallenge.network.NetworkCallback
 import com.example.otchallenge.presenter.BookPresenter
-import com.example.otchallenge.repository.BookRepository
+import com.example.otchallenge.repository.BookRepositoryImpl
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), BookContract.View {
 
     @Inject
-    lateinit var bookRepository: BookRepository
+    lateinit var bookRepository: BookRepositoryImpl
 
     @Inject
     lateinit var presenter: BookPresenter

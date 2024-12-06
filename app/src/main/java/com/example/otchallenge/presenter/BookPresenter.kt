@@ -1,7 +1,7 @@
 package com.example.otchallenge.presenter
 
 import com.example.otchallenge.contract.BookContract
-import com.example.otchallenge.repository.BookRepository
+import com.example.otchallenge.models.BookResponse
 import java.io.IOException
 import javax.inject.Inject
 
@@ -13,8 +13,8 @@ import javax.inject.Inject
  */
 class BookPresenter @Inject constructor(
     private val view: BookContract.View,
-    private val repository: BookRepository,
-) : BookContract.Presenter {
+    private val repository: BookContract.Repository,
+) : BookContract.Presenter, BookContract.Repository.OnFinishedListener {
 
     /**
      * Loads the list of books and updates the view.
@@ -22,17 +22,20 @@ class BookPresenter @Inject constructor(
     override fun loadBooksList() {
         view.showLoading()
 
-        repository.fetchBookList { result ->
-            result.onSuccess { bookResponse ->
-                view.hideLoading()
-                view.showBooksList(books = bookResponse.results.books)
-            }.onFailure { throwable ->
-                val errorMessage = when (throwable) {
-                    is IOException -> NETWORK_ERROR_IO_EXCEPTION
-                    else -> throwable.message ?: GENERAL_EXCEPTION
-                }
-                view.showError(message = errorMessage)
+        repository.fetchBookList(this)
+    }
+
+    override fun onSuccess(response: Result<BookResponse>?) {
+        response?.onSuccess { bookResponse ->
+            view.hideLoading()
+            view.showBooksList(books = bookResponse.results.books)
+        }?.onFailure { throwable ->
+            val errorMessage = when (throwable) {
+                is IOException -> NETWORK_ERROR_IO_EXCEPTION
+                else -> throwable.message ?: GENERAL_EXCEPTION
             }
+            view.hideLoading()
+            view.showError(message = errorMessage)
         }
     }
 

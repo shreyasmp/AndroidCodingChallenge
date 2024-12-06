@@ -2,6 +2,7 @@ package com.example.otchallenge.contract
 
 import androidx.annotation.UiThread
 import com.example.otchallenge.models.Book
+import com.example.otchallenge.models.BookResponse
 
 /**
  * Contract interface for the Book feature, defining the View and Presenter interfaces.
@@ -53,5 +54,29 @@ interface BookContract {
          * Handles the event when the network is lost.
          */
         fun onNetworkLost()
+    }
+
+    /**
+     * Interface representing the Repository in the MVP pattern.
+     * It is responsible for fetching book data from the data source.
+     */
+    interface Repository {
+        /**
+         * Fetches the list of books from the data source and returns the result via a callback.
+         *
+         * @param listener The listener to return the result of the data fetch operation.
+         *                 If the fetch operation is successful, the listener's onSuccess method is called with the result.
+         *                 If the fetch operation fails, the listener's onSuccess method is called with an exception.
+         */
+        fun fetchBookList(listener: OnFinishedListener)
+
+        interface OnFinishedListener {
+            /**
+             * Called when the book data fetch operation is finished.
+             *
+             * @param response The result of the fetch operation, containing either the fetched data or an exception.
+             */
+            fun onSuccess(response: Result<BookResponse>?)
+        }
     }
 }
