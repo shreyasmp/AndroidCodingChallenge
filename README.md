@@ -25,6 +25,7 @@ The project uses the following dependencies:
 - **RxJava**: `io.reactivex.rxjava3:rxjava` for reactive programming
 - **RxAndroid**: `io.reactivex.rxjava3:rxandroid` for Android-specific bindings
 - **RxKotlin**: `io.reactivex.rxjava3:rxkotlin` for Kotlin extensions
+- **MockK**: `io.mockk:mockk` for mocking in tests
 
 ## Setup
 
@@ -46,4 +47,5 @@ The project uses the following dependencies:
 
 ## Screenshot/Video
 ![alt text](images/Book_List.gif)
+![alt text](images/Unit_Tests.png)
 ![alt text](images/AndroidTest.png)
