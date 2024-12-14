@@ -50,6 +50,7 @@ dependencies {
     //retrofit
     implementation libs.retrofit
     implementation libs.retrofit.rx.adapter
+    implementation libs.coroutine.adapter
 
     //Gson converter factory
     implementation libs.retrofit.gson.converter
@@ -70,6 +71,7 @@ dependencies {
     testImplementation libs.mockito.inline
     testImplementation libs.mockito.kotlin
     testImplementation libs.mockk
+    testImplementation libs.coroutine.test
 
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core

@@ -1,7 +1,7 @@
 package com.example.otchallenge.service
 
 import com.example.otchallenge.models.BookResponse
-import retrofit2.Call
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -13,5 +13,5 @@ interface BookApiService {
     fun getBooks(
         @Query("api-key") apiKey: String = "KoRB4K5LRHygfjCL2AH6iQ7NeUqDAGAB",
         @Query("offset") offset: Int = 0,
-    ): Call<BookResponse>
+    ): Deferred<BookResponse>
 }

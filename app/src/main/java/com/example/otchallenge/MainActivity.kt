@@ -37,26 +37,17 @@ class MainActivity : AppCompatActivity(), BookContract.View {
         (application as MyApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        presenter = BookPresenter(this, bookRepository)
-
-        networkCallback = NetworkCallback(presenter)
-        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        // Create a network request to monitor internet connectivity
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-        // Register the network callback to handle network changes
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        presenter = BookPresenter(this, bookRepository)
+
         binding.booksList.layoutManager = LinearLayoutManager(this)
         bookAdapter = BookAdapter(emptyList())
         binding.booksList.adapter = bookAdapter
@@ -67,27 +58,19 @@ class MainActivity : AppCompatActivity(), BookContract.View {
     }
 
     override fun showBooksList(books: List<Book>) {
-        runOnUiThread {
-            bookAdapter.updateBooks(newBooks = books)
-        }
+        bookAdapter.updateBooks(newBooks = books)
     }
 
     override fun showError(message: String) {
-        runOnUiThread {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-        }
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun showLoading() {
-        runOnUiThread {
-            binding.progressIndicator.visibility = View.VISIBLE
-        }
+        binding.progressIndicator.visibility = View.VISIBLE
     }
 
     override fun hideLoading() {
-        runOnUiThread {
-            binding.progressIndicator.visibility = View.GONE
-        }
+        binding.progressIndicator.visibility = View.GONE
     }
 
     /**
@@ -118,11 +101,34 @@ class MainActivity : AppCompatActivity(), BookContract.View {
     }
 
     /**
+     *  It is best to register and unregister the network callback in onStart()
+     *  and onStop() methods respectively. This ensures that the network callback is
+     *  active only when the activity is in the foreground, which can help conserve resources.
+     */
+    override fun onStart() {
+        super.onStart()
+        networkCallback = NetworkCallback(presenter)
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // Create a network request to monitor internet connectivity
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        // Register the network callback to handle network changes
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        connectivityManager.unregisterNetworkCallback(networkCallback)
+    }
+
+    /**
      * Called when the activity is destroyed.
      * Unregisters the network callback.
      */
     override fun onDestroy() {
         super.onDestroy()
-        connectivityManager.unregisterNetworkCallback(networkCallback)
+        presenter.cleanup()
     }
 }

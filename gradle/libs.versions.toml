@@ -19,6 +19,8 @@ gsonConverterFactory = "2.11.0"
 httpLoggingInterceptor = "4.10.0"
 mockito = "4.0.0"
 mockk = "1.13.5"
+coroutineAdapter = "0.9.2"
+coroutineTest = "1.6.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,15 +36,17 @@ dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", versi
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-rx-adapter = { group = "com.squareup.retrofit2", name = "adapter-rxjava2", version.ref = "retrofit" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
-rx-java = {group = "io.reactivex.rxjava2", name="rxjava", version.ref = "rx-java"}
-rx-android = {group = "io.reactivex.rxjava2", name="rxandroid", version.ref = "rx-android"}
-rx-kotlin = {group = "io.reactivex.rxjava2", name="rxkotlin", version.ref = "rx-kotlin"}
+rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rx-java" }
+rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rx-android" }
+rx-kotlin = { group = "io.reactivex.rxjava2", name = "rxkotlin", version.ref = "rx-kotlin" }
 retrofit-gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gsonConverterFactory" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "httpLoggingInterceptor" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk"}
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+coroutine-adapter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlin-coroutines-adapter", version.ref = "coroutineAdapter" }
+coroutine-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutineTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

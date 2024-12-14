@@ -3,6 +3,8 @@ package com.example.otchallenge.contract
 import androidx.annotation.UiThread
 import com.example.otchallenge.models.Book
 import com.example.otchallenge.models.BookResponse
+import com.example.otchallenge.util.ResultWrapper
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Contract interface for the Book feature, defining the View and Presenter interfaces.
@@ -47,13 +49,24 @@ interface BookContract {
     interface Presenter {
         /**
          * Loads the list of books.
+         * This method is responsible for fetching the book data from the repository
+         * and updating the view with the retrieved data.
          */
         fun loadBooksList()
 
         /**
          * Handles the event when the network is lost.
+         * This method is called to notify the view about the network disconnection
+         * and to take appropriate actions, such as displaying an error message.
          */
         fun onNetworkLost()
+
+        /**
+         * Cleans up resources used by the presenter.
+         * This method is called to release any resources or cancel any ongoing operations
+         * when the presenter is no longer needed.
+         */
+        fun cleanup()
     }
 
     /**
@@ -62,21 +75,12 @@ interface BookContract {
      */
     interface Repository {
         /**
-         * Fetches the list of books from the data source and returns the result via a callback.
+         * Fetches the list of books from the data source and returns the result.
+         * This method is a suspend function that performs the network or database operation
+         * to retrieve the book list and wraps the result in a Flow of ResultWrapper.
          *
-         * @param listener The listener to return the result of the data fetch operation.
-         *                 If the fetch operation is successful, the listener's onSuccess method is called with the result.
-         *                 If the fetch operation fails, the listener's onSuccess method is called with an exception.
+         * @return A Flow emitting ResultWrapper containing the book list or an error.
          */
-        fun fetchBookList(listener: OnFinishedListener)
-
-        interface OnFinishedListener {
-            /**
-             * Called when the book data fetch operation is finished.
-             *
-             * @param response The result of the fetch operation, containing either the fetched data or an exception.
-             */
-            fun onSuccess(response: Result<BookResponse>?)
-        }
+        suspend fun fetchBookList(): Flow<ResultWrapper<BookResponse>>
     }
 }

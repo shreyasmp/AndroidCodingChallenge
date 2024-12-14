@@ -1,9 +1,15 @@
 package com.example.otchallenge.presenter
 
 import com.example.otchallenge.contract.BookContract
-import com.example.otchallenge.models.BookResponse
+import com.example.otchallenge.util.ResultWrapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Presenter class for managing the book list and handling user interactions.
@@ -14,36 +20,57 @@ import javax.inject.Inject
 class BookPresenter @Inject constructor(
     private val view: BookContract.View,
     private val repository: BookContract.Repository,
-) : BookContract.Presenter, BookContract.Repository.OnFinishedListener {
+) : BookContract.Presenter, CoroutineScope {
+
+    private val job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     /**
      * Loads the list of books and updates the view.
      */
     override fun loadBooksList() {
-        view.showLoading()
+        launch {
+            repository.fetchBookList().collect { result ->
+                when (result) {
+                    is ResultWrapper.Loading -> {
+                        withContext(Dispatchers.Main) {
+                            view.showLoading()
+                        }
+                    }
 
-        repository.fetchBookList(this)
-    }
+                    is ResultWrapper.Success -> {
+                        withContext(Dispatchers.Main) {
+                            view.hideLoading()
+                            view.showBooksList(books = result.data.results.books)
+                        }
+                    }
 
-    override fun onSuccess(response: Result<BookResponse>?) {
-        response?.onSuccess { bookResponse ->
-            view.hideLoading()
-            view.showBooksList(books = bookResponse.results.books)
-        }?.onFailure { throwable ->
-            val errorMessage = when (throwable) {
-                is IOException -> NETWORK_ERROR_IO_EXCEPTION
-                else -> throwable.message ?: GENERAL_EXCEPTION
+                    is ResultWrapper.Failure -> {
+                        withContext(Dispatchers.Main) {
+                            view.hideLoading()
+                            val errorMessage = when (result.throwable) {
+                                is IOException -> NETWORK_ERROR_IO_EXCEPTION
+                                else -> result.throwable.message ?: GENERAL_EXCEPTION
+                            }
+                            view.showError(message = errorMessage)
+                        }
+                    }
+                }
             }
-            view.hideLoading()
-            view.showError(message = errorMessage)
         }
     }
 
-    /**
-     * Handles the event when the network is lost and updates the view.
-     */
     override fun onNetworkLost() {
-        view.showError(message = NETWORK_CONNECTION_LOST)
+        launch {
+            withContext(Dispatchers.Main) {
+                view.showError(message = NETWORK_CONNECTION_LOST)
+            }
+        }
+    }
+
+    override fun cleanup() {
+        job.cancel()
     }
 
     private companion object {

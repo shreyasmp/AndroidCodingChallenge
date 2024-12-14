@@ -1,6 +1,7 @@
 package com.example.otchallenge.di
 
 import com.example.otchallenge.service.BookApiService
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,6 +39,7 @@ object NetworkModule {
             .baseUrl("https://api.nytimes.com/svc/books/v3/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .build()
     }
 

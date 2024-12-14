@@ -1,110 +1,65 @@
 package com.example.otchallenge.repository
 
-import com.example.otchallenge.contract.BookContract
 import com.example.otchallenge.models.BookResponse
 import com.example.otchallenge.service.BookApiService
+import com.example.otchallenge.util.ResultWrapper
 import com.example.otchallenge.util.provideBookResponse
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
+@ExperimentalCoroutinesApi
 class BookRepositoryImplTest {
 
     private lateinit var apiService: BookApiService
     private lateinit var repository: BookRepositoryImpl
-    private lateinit var listener: BookContract.Repository.OnFinishedListener
 
     @Before
     fun setUp() {
         apiService = mockk()
-        listener = mockk(relaxed = true)
         repository = BookRepositoryImpl(apiService)
     }
 
     @Test
-    fun `fetchBookList should call onSuccess with data when response is successful`() {
-        // Arrange
-        val call = mockk<Call<BookResponse>>()
-        val response = mockk<Response<BookResponse>>()
-        val bookResponse = provideBookResponse()
+    fun `fetchBookList should emit loading, success and data when response is successful`() =
+        runBlocking {
+            // Arrange
+            val bookResponse = provideBookResponse()
+            val deferred = mockk<Deferred<BookResponse>>()
+            coEvery { deferred.await() } returns bookResponse
+            coEvery { apiService.getBooks() } returns deferred
 
-        every { apiService.getBooks() } returns call
-        every { call.enqueue(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<BookResponse>
-            callback.onResponse(call, response)
+            // Act
+            val result = mutableListOf<ResultWrapper<BookResponse>>()
+            repository.fetchBookList().collect { result.add(it) }
+
+            // Assert
+            assertEquals(2, result.size)
+            assertEquals(ResultWrapper.Loading<BookResponse>(true), result[0])
+            assertEquals(ResultWrapper.Success(bookResponse), result[1])
         }
-        every { response.isSuccessful } returns true
-        every { response.body() } returns bookResponse
-
-        // Act
-        repository.fetchBookList(listener)
-
-        // Assert
-        verify { listener.onSuccess(Result.success(bookResponse)) }
-    }
 
     @Test
-    fun `fetchBookList should call onSuccess with exception when response is not successful`() {
-        // Arrange
-        val call = mockk<Call<BookResponse>>()
-        val response = mockk<Response<BookResponse>>()
+    fun `fetchBookList should emit loading and failure when response is unsuccessful`() =
+        runBlocking {
+            // Arrange
+            val exception = Exception("Network error")
+            val deferred = mockk<Deferred<BookResponse>>()
+            coEvery { deferred.await() } throws exception
+            coEvery { apiService.getBooks() } returns deferred
 
-        every { apiService.getBooks() } returns call
-        every { call.enqueue(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<BookResponse>
-            callback.onResponse(call, response)
+            // Act
+            val result = mutableListOf<ResultWrapper<BookResponse>>()
+            repository.fetchBookList().collect { result.add(it) }
+
+            // Assert
+            assertEquals(2, result.size)
+            assertEquals(ResultWrapper.Loading<BookResponse>(true), result[0])
+            assertEquals(ResultWrapper.Failure<BookResponse>(exception), result[1])
         }
-        every { response.isSuccessful } returns false
-
-        // Act
-        repository.fetchBookList(listener)
-
-        // Assert
-        verify { listener.onSuccess(match { it.isFailure }) }
-    }
-
-    @Test
-    fun `fetchBookList should call onSuccess with exception when response body is null`() {
-        // Arrange
-        val call = mockk<Call<BookResponse>>()
-        val response = mockk<Response<BookResponse>>()
-
-        every { apiService.getBooks() } returns call
-        every { call.enqueue(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<BookResponse>
-            callback.onResponse(call, response)
-        }
-        every { response.isSuccessful } returns true
-        every { response.body() } returns null
-
-        // Act
-        repository.fetchBookList(listener)
-
-        // Assert
-        verify { listener.onSuccess(match { it.isFailure }) }
-    }
-
-    @Test
-    fun `fetchBookList should call onSuccess with exception when onFailure is called`() {
-        // Arrange
-        val call = mockk<Call<BookResponse>>()
-        val throwable = Throwable("Network error")
-
-        every { apiService.getBooks() } returns call
-        every { call.enqueue(any()) } answers {
-            val callback = it.invocation.args[0] as Callback<BookResponse>
-            callback.onFailure(call, throwable)
-        }
-
-        // Act
-        repository.fetchBookList(listener)
-
-        // Assert
-        verify { listener.onSuccess(match { it.isFailure }) }
-    }
 }
