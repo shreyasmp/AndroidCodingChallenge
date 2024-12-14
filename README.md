@@ -46,6 +46,10 @@ The project uses the following dependencies:
 - The `BookPresenter` handles the business logic and interacts with the `BookRepository` to fetch data.
 - The `BookRepositoryImpl` fetches data from the API using Retrofit.
 - The `NetworkCallback` handles network connectivity changes.
+- **Dagger** is used for dependency injection to manage the creation and injection of dependencies.
+- **Flow** is used for handling asynchronous data streams.
+- **Coroutines** are used for managing background tasks and ensuring smooth UI interactions.
+- **Retrofit** is used for making network requests to fetch data from the API.
 
 ## Testing
 
