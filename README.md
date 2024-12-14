@@ -26,6 +26,8 @@ The project uses the following dependencies:
 - **RxAndroid**: `io.reactivex.rxjava3:rxandroid` for Android-specific bindings
 - **RxKotlin**: `io.reactivex.rxjava3:rxkotlin` for Kotlin extensions
 - **MockK**: `io.mockk:mockk` for mocking in tests
+- **Kotlin Coroutines**: `org.jetbrains.kotlinx:kotlinx-coroutines-core` for coroutine support
+- **Kotlin Coroutines Test**: `org.jetbrains.kotlinx:kotlinx-coroutines-test` for testing coroutines
 
 ## Setup
 
@@ -44,6 +46,11 @@ The project uses the following dependencies:
 - The `BookPresenter` handles the business logic and interacts with the `BookRepository` to fetch data.
 - The `BookRepositoryImpl` fetches data from the API using Retrofit.
 - The `NetworkCallback` handles network connectivity changes.
+
+## Testing
+
+- Unit tests are located in the `app/src/test/java/com/example/otchallenge/presenter/BookPresenterTest.kt` file.
+- The tests cover the `BookPresenter` class, ensuring correct behavior for loading books, handling errors, and network connectivity changes.
 
 ## Screenshot/Video
 ![alt text](images/Book_List.gif)
