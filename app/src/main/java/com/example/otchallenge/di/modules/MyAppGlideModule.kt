@@ -1,4 +1,4 @@
-package com.example.otchallenge.di
+package com.example.otchallenge.di.modules
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule

@@ -1,4 +1,4 @@
-package com.example.otchallenge.di
+package com.example.otchallenge.di.modules
 
 import com.example.otchallenge.contract.BookContract
 import com.example.otchallenge.presenter.BookPresenter

@@ -1,4 +1,4 @@
-package com.example.otchallenge.di
+package com.example.otchallenge.di.modules
 
 import com.example.otchallenge.service.BookApiService
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
